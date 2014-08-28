@@ -12,21 +12,21 @@ It's a simple local file system driver which does not uses any databases.
 Requirements
 ------------
 
-Python >= 3.0
-Django >= 1.6
-Django REST Framework >= 2.3
-PIL or Pillow
+* Python >= 3.0
+* Django >= 1.6
+* Django REST Framework >= 2.3
+* PIL or Pillow
 
 
 Installation
 ------------
 
-* Add elfinderfs django app to your project. (no setup.py atm)
+* elfinderfs django app to your project. (no setup.py atm)
 * Modify your project's settings.py: add 'rest_framework' and 'elfinderfs' to INSTALLED_APPS
 * Add elfinderfs configuration to your project's settings.py:
 
 For example:
-<pre>
+```python
 ELFINDERFS = {
     'roots': {
         'Media': {
@@ -42,31 +42,32 @@ ELFINDERFS = {
     },
     'default_root': 'Media',
 }
-</pre>
+```
 
 * Add elfinderfs urls to your projec's urls.py:
 
 For example:
-<pre>
+```python
 urlpatterns = patterns(
     '',
     ...
     url(r'^finder/', include('elfinderfs.urls', namespace='elfinderfs')),
 )
-</pre>
+```
+
 If you need a connector only:
-<pre>
+```python
 urlpatterns = patterns(
     '',
     ...
     url(r'^finder/connector/', 'elfinderfs.views.connector'),
 )
-</pre>
+```
 
 * Add elFinder client to your webpage or template
 
 For example:
-<pre>
+```html
 ...
 <head>
     ...
@@ -92,8 +93,7 @@ For example:
     ...
 </body>
 ...
-</pre>
-
+```
 
 Not implemented commands
 ------------------------
