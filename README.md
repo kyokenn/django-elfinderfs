@@ -21,8 +21,8 @@ Requirements
 Installation
 ------------
 
-* elfinderfs django app to your project. (no setup.py atm)
-* Modify your project's settings.py: add 'rest_framework' and 'elfinderfs' to INSTALLED_APPS
+* Add elfinderfs django app to your project. (no setup.py atm).
+* Modify your project's settings.py: add 'rest_framework' and 'elfinderfs' to INSTALLED_APPS.
 * Add elfinderfs configuration to your project's settings.py:
 
 For example:
@@ -44,56 +44,9 @@ ELFINDERFS = {
 }
 ```
 
-* Add elfinderfs urls to your projec's urls.py:
+* File management is available in your django admin at the url /admin/elfinderfs/sitefiles/.
+Files are the same for each domain.
 
-For example:
-```python
-urlpatterns = patterns(
-    '',
-    ...
-    url(r'^finder/', include('elfinderfs.urls', namespace='elfinderfs')),
-)
-```
-
-If you need a connector only:
-```python
-urlpatterns = patterns(
-    '',
-    ...
-    url(r'^finder/connector/', 'elfinderfs.views.connector'),
-)
-```
-
-* Add elFinder client to your webpage or template
-
-For example:
-```html
-...
-<head>
-    ...
- <link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/smoothness/jquery-ui.css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" ></script> 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/elfinder/css/elfinder.min.css">
-    <script type="text/javascript" src="/static/elfinder/js/elfinder.min.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="/static/elfinder/css/theme.css">
-</head>
-...
-<body>
-    ...
-    <script type="text/javascript" charset="utf-8">
-        $().ready(function() {
-            var elf = $('#elfinder').elfinder({
-                lang: 'en',
-                url: '/finder/connector/'
-            }).elfinder('instance');
-        });
-    </script>
-    <div id="elfinder"></div>
-    ...
-</body>
-...
-```
 
 Not implemented commands
 ------------------------
@@ -106,3 +59,18 @@ Not implemented commands
 * extract
 * info
 * netmount
+
+Most of the commands are not used in default configuration of the elFinder.
+
+
+Not implemented features
+------------------------
+
+* Archive management (packing, unpacking).
+* Symlinks (symlinks are hidden to prevent data corruption).
+
+
+Screenshots
+-----------
+
+![elfinderfs in django admin](/screenshot.png)

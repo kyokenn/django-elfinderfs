@@ -25,6 +25,7 @@ from hashlib import md5
 from PIL import Image
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 
 
 mimetypes.init()
@@ -96,9 +97,12 @@ class AbstractNode(object):
             return Node(root=self._root, path=os.path.dirname(self._path))
 
     def _listdir(self):
+        def allowed(file_):
+            path = os.path.join(self._rpath, file_)
+            return not file_.startswith('.') and not os.path.islink(path)
         files = os.listdir(self._rpath)
         if not settings.ELFINDERFS.get('show_hidden'):
-            files = list(filter(lambda x: not x.startswith('.'), files))
+            files = list(filter(allowed, files))
         return files
 
 
@@ -393,3 +397,10 @@ class ImageNodeMixin(object):
 
 class Node(ImageNodeMixin, ManagedNode):
     ''' Virtual model which represents file/dir. '''
+
+
+class SiteFiles(Site):
+    class Meta(object):
+        proxy = True
+        verbose_name = 'Site Files'
+        verbose_name_plural = 'Site Files'

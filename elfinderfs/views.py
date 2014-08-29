@@ -22,6 +22,7 @@ import os
 from copy import copy
 
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from django.conf import settings
@@ -32,48 +33,30 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from .models import Node
-from .serializers import (
-    CmdSerializer,
-    SearchCmdSerializer,
-    SingleTargetCmdSerializer,
-    SingleTargetOpCmdSerializer,
-    OpenCmdSerializer,
-    FileCmdSerializer,
-    PutCmdSerializer,
-    ResizeCmdSerializer,
-    MultipleTargetsCmdSerializer,
-    PasteCmdSerializer,
-    NodeSerializer,
-    TreeNodeSerializer,
-    FilesNodeSerializer,
-    AddedNodeSerializer,
-    RemovedNodeSerializer,
-    ChangedNodeSerializer,
-    AddedRemovedNodeSerializer,
-    GetNodeSerializer,
-    OpenNodeSerializer,
-)
+from . import serializers
 
 
 class ConnectorView(RetrieveAPIView):
+    permission_classes = IsAdminUser,
+
     def get_serializer(self, *args, **kwargs):
         ''' response serializer '''
         data = self.request.DATA or self.request.GET
         cmd = data.get('cmd')
         serializer = {
-            'tree': TreeNodeSerializer,
-            'parents': TreeNodeSerializer,
-            'search': FilesNodeSerializer,
-            'mkdir': AddedNodeSerializer,
-            'mkfile': AddedNodeSerializer,
-            'duplicate': AddedNodeSerializer,
-            'rm': RemovedNodeSerializer,
-            'resize': ChangedNodeSerializer,
-            'put': ChangedNodeSerializer,
-            'rename': AddedRemovedNodeSerializer,
-            'paste': AddedRemovedNodeSerializer,
-            'get': GetNodeSerializer,
-            'open': OpenNodeSerializer,
+            'tree': serializers.TreeNodeSerializer,
+            'parents': serializers.TreeNodeSerializer,
+            'search': serializers.FilesNodeSerializer,
+            'mkdir': serializers.AddedNodeSerializer,
+            'mkfile': serializers.AddedNodeSerializer,
+            'duplicate': serializers.AddedNodeSerializer,
+            'rm': serializers.RemovedNodeSerializer,
+            'resize': serializers.ChangedNodeSerializer,
+            'put': serializers.ChangedNodeSerializer,
+            'rename': serializers.AddedRemovedNodeSerializer,
+            'paste': serializers.AddedRemovedNodeSerializer,
+            'get': serializers.GetNodeSerializer,
+            'open': serializers.OpenNodeSerializer,
         }.get(cmd)
         return serializer(*args, **kwargs)
 
@@ -81,23 +64,23 @@ class ConnectorView(RetrieveAPIView):
         data = self.request.DATA or self.request.GET
         cmd = data.get('cmd')
         return {
-            'ping': CmdSerializer,
-            'search': SearchCmdSerializer,
-            'tree': SingleTargetCmdSerializer,
-            'parents': SingleTargetCmdSerializer,
-            'get': SingleTargetCmdSerializer,
-            'upload': SingleTargetCmdSerializer,
-            'mkfile': SingleTargetOpCmdSerializer,
-            'mkdir': SingleTargetOpCmdSerializer,
-            'rename': SingleTargetOpCmdSerializer,
-            'open': OpenCmdSerializer,
-            'file': FileCmdSerializer,
-            'put': PutCmdSerializer,
-            'resize': ResizeCmdSerializer,
-            'rm': MultipleTargetsCmdSerializer,
-            'duplicate': MultipleTargetsCmdSerializer,
-            'paste': PasteCmdSerializer,
-        }.get(cmd, CmdSerializer)
+            'ping': serializers.CmdSerializer,
+            'search': serializers.SearchCmdSerializer,
+            'tree': serializers.SingleTargetCmdSerializer,
+            'parents': serializers.SingleTargetCmdSerializer,
+            'get': serializers.SingleTargetCmdSerializer,
+            'upload': serializers.SingleTargetCmdSerializer,
+            'mkfile': serializers.SingleTargetOpCmdSerializer,
+            'mkdir': serializers.SingleTargetOpCmdSerializer,
+            'rename': serializers.SingleTargetOpCmdSerializer,
+            'open': serializers.OpenCmdSerializer,
+            'file': serializers.FileCmdSerializer,
+            'put': serializers.PutCmdSerializer,
+            'resize': serializers.ResizeCmdSerializer,
+            'rm': serializers.MultipleTargetsCmdSerializer,
+            'duplicate': serializers.MultipleTargetsCmdSerializer,
+            'paste': serializers.PasteCmdSerializer,
+        }.get(cmd, serializers.CmdSerializer)
 
     def get_cmd_serializer(self, data):
         ''' request serializer '''
@@ -118,8 +101,8 @@ class ConnectorView(RetrieveAPIView):
                     target = cmd.get('target') or Node()
                     files = target.files(tree=cmd.get('tree'))
                     response = {
-                        'cwd': NodeSerializer(target).data,
-                        'files': NodeSerializer(files).data,
+                        'cwd': target,
+                        'files': files,
                         'netDrivers': [],
                         'uplMaxSize': settings.ELFINDERFS.get(
                             'uplMaxSize', '32M'),
@@ -288,11 +271,3 @@ class ConnectorView(RetrieveAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.cmd(request, *args, **kwargs)
-
-connector = ConnectorView.as_view()
-
-
-class FinderView(TemplateView):
-     template_name = 'elfinderfs/base.html'
-
-finder = FinderView.as_view()
