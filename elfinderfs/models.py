@@ -271,6 +271,10 @@ class ManagedNode(InfoNode):
     def get_absolute_url(self):
         return self._config['url'] + self._path.lstrip(os.sep)
 
+    @property
+    def absolute_url(self):
+        return self.get_absolute_url()
+
     def open(self, mode='r'):
         return open(self._rpath, mode)
 
@@ -345,7 +349,9 @@ class ManagedNode(InfoNode):
 class ImageNodeMixin(object):
     @property
     def _is_image(self):
-        return self.mime in ('image/jpeg', 'image/png')
+        return self.mime in (
+            'image/jpeg', 'image/png', 'image/gif',
+            'image/vnd.microsoft.icon')
 
     def _get_thumbnail(self, force_update=False):
         thumbnails_root = os.path.join(self._config['root'],

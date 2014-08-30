@@ -168,6 +168,7 @@ class NodeSerializer(serializers.Serializer):
     thash = serializers.CharField(max_length=4096)
     dim = serializers.CharField(max_length=32)
     volumeid = serializers.CharField(max_length=64)
+    absolute_url = serializers.CharField(max_length=4096)
 
 
 class NetDriverSerializer(serializers.Serializer):
