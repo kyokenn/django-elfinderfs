@@ -73,4 +73,10 @@ Not implemented features
 Screenshots
 -----------
 
-![elfinderfs in django admin](/screenshot.png)
+* Default Django Admin
+
+![Default Django Admin](/defaultadmin.png)
+
+* Django Suit
+
+![Django Suit](/suitadmin.png)

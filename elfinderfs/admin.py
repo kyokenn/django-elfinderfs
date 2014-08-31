@@ -55,12 +55,12 @@ class ElfinderWidget(Widget):
                    var reParam = new RegExp("(?:[\?&]|&amp;)" + paramName + "=([^&]+)", "i");
                    var match = window.location.search.match(reParam);
                    return (match && match.length > 1) ? match[1] : "";
-                }           
+                }
                 $().ready(function() {
                     // hide label in django-suit
                     $(".control-label").hide();
                     // hide label
-                    $("#id_%(name)s").hide();
+                    $("label[for=id_%(name)s]").hide();
                     var options = %(options)s;
                     options.customData = {
                         "csrfmiddlewaretoken": $.cookie("csrftoken")
