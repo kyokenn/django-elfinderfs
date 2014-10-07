@@ -236,7 +236,7 @@ class ConnectorView(RetrieveAPIView):
                     if cmd.get('download'):
                         response = HttpResponse(
                             FileWrapper(cmd['target'].open()),
-                            mimetype=node.mime)
+                            content_type=cmd['target'].mime)
                         response['Content-Disposition'] = (
                             'attachment; filename=%s' % cmd['target'].name)
                         return response

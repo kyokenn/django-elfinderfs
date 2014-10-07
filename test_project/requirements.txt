@@ -1,4 +1,4 @@
-Django==1.6.6
+Django==1.7
 Pillow==2.2.1
 # django-suit==0.2.6
-djangorestframework==2.3.14
+djangorestframework==2.4.3

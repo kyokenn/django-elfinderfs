@@ -176,15 +176,15 @@ class NetDriverSerializer(serializers.Serializer):
 
 
 class TreeNodeSerializer(serializers.Serializer):
-    tree = NodeSerializer()
+    tree = NodeSerializer(many=True)
 
 
 class FilesNodeSerializer(serializers.Serializer):
-    files = NodeSerializer()
+    files = NodeSerializer(many=True)
 
 
 class AddedNodeSerializer(serializers.Serializer):
-    added = NodeSerializer()
+    added = NodeSerializer(many=True)
 
 
 class RemovedNodeSerializer(serializers.Serializer):
@@ -192,7 +192,7 @@ class RemovedNodeSerializer(serializers.Serializer):
 
 
 class ChangedNodeSerializer(serializers.Serializer):
-    changed = NodeSerializer()
+    changed = NodeSerializer(many=True)
 
 
 class AddedRemovedNodeSerializer(AddedNodeSerializer, RemovedNodeSerializer):
@@ -205,7 +205,7 @@ class GetNodeSerializer(serializers.Serializer):
 
 class OpenNodeSerializer(serializers.Serializer):
     cwd = NodeSerializer()
-    files = NodeSerializer()
-    netDrivers = NetDriverSerializer()
+    files = NodeSerializer(many=True)
+    netDrivers = NetDriverSerializer(many=True)
     uplMaxSize = serializers.CharField(max_length=32)
     api = serializers.CharField(max_length=8, required=False)

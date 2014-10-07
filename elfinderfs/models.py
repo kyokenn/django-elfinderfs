@@ -275,7 +275,7 @@ class ManagedNode(InfoNode):
     def absolute_url(self):
         return self.get_absolute_url()
 
-    def open(self, mode='r'):
+    def open(self, mode='rb'):
         return open(self._rpath, mode)
 
     def mkdir(self, name):
