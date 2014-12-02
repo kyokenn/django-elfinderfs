@@ -217,7 +217,7 @@ class ConnectorView(RetrieveAPIView):
             except FileNotFoundError as e:
                 response = {'error': ['errFileNotFound']}
             else:
-                response = {'added': serializers.NodeSerializer(added).data}
+                response = {'added': serializers.NodeSerializer(added, many=True).data}
         else:
             response = {
                 'error': self.get_cmd_serializer_errors(serializer),
