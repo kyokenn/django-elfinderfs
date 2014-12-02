@@ -21,7 +21,7 @@ Requirements
 Installation
 ------------
 
-* Add elfinderfs django app to your project. (no setup.py atm).
+* pip install django-elfinderfs
 * Modify your project's settings.py: add 'rest_framework' and 'elfinderfs' to INSTALLED_APPS.
 * Add elfinderfs configuration to your project's settings.py:
 
