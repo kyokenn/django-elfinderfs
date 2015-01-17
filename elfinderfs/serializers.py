@@ -14,7 +14,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from rest_framework import fields, serializers
+from rest_framework import serializers
 
 from .models import Node
 
@@ -22,33 +22,14 @@ from .models import Node
 # FIELDS
 
 
-class NodeField(fields.WritableField):
-    def field_from_native(self, data, files, field_name, into):
-        into[field_name] = Node(hash_=data[field_name])
-
-    def field_to_native(self, obj, field_name):
-        pass
+class NodeField(serializers.Field):
+    def to_internal_value(self, data):
+        return Node(hash_=data)
 
 
-class NodesField(fields.WritableField):
-    def field_from_native(self, data, files, field_name, into):
-        into[field_name] = map(lambda x: Node(hash_=x),
-                               data.getlist(field_name + '[]'))
-
-    def field_to_native(self, obj, field_name):
-        pass
-
-
-class HashesField(serializers.WritableField):
-    def field_from_native(self, data, files, field_name, into):
-        pass
-
-    def field_to_native(self, obj, field_name):
-        if hasattr(obj, field_name):
-            field = getattr(obj, field_name)
-        else:
-            field = obj[field_name]
-        return map(lambda x: getattr(x, 'hash'), field)
+class HashesField(serializers.Field):
+    def to_representation(self, obj):
+        return map(lambda x: getattr(x, 'hash'), obj)
 
 
 # REQUEST (CMD) SERIALIZERS
@@ -57,9 +38,8 @@ class HashesField(serializers.WritableField):
 class CmdSerializer(serializers.Serializer):
     cmd = serializers.CharField(max_length=32)
 
-    def validate_cmd(self, attrs, source):
-        cmd = attrs.get(source)
-        if cmd not in ('open', 'file', 'tree', 'parents',
+    def validate_cmd(self, value):
+        if value not in ('open', 'file', 'tree', 'parents',
                        # 'ls',
                        # 'tmb',
                        # 'size',
@@ -74,7 +54,7 @@ class CmdSerializer(serializers.Serializer):
                        # 'netmount',
                 ):
             raise serializers.ValidationError('errUnknownCmd')
-        return attrs
+        return value
 
 
 class SearchCmdSerializer(CmdSerializer):
@@ -84,11 +64,10 @@ class SearchCmdSerializer(CmdSerializer):
 class SingleTargetCmdSerializer(CmdSerializer):
     target = NodeField()
 
-    def validate_target(self, attrs, source):
-        target = attrs.get(source)
-        if not target.exists():
+    def validate_target(self, value):
+        if not value.exists():
             raise serializers.ValidationError('errFileNotFound')
-        return attrs
+        return value
 
 
 class OpenCmdSerializer(CmdSerializer):
@@ -96,15 +75,14 @@ class OpenCmdSerializer(CmdSerializer):
     init = serializers.BooleanField(required=False)
     tree = serializers.BooleanField(required=False)
 
-    def validate_target(self, attrs, source):
+    def validate_target(self, value):
         ''' target is required if init is false '''
-        target = attrs.get(source)
-        init = attrs.get('init')
-        if init not in ('true', '1') and not target:
+        init = self.initial_data.get('init')
+        if init not in ('true', '1') and not value:
             raise serializers.ValidationError('errFileNotFound')
-        if not target.exists():
+        if not value.exists():
             raise serializers.ValidationError('errFileNotFound')
-        return attrs
+        return value
 
 
 class SingleTargetOpCmdSerializer(SingleTargetCmdSerializer):
@@ -126,26 +104,28 @@ class ResizeCmdSerializer(SingleTargetCmdSerializer):
     height = serializers.IntegerField()
     mode = serializers.CharField(max_length=32)
 
-    def validate_mode(self, attrs, source):
-        mode = attrs.get(source)
-        if mode not in ('resize', 'crop'):
+    def validate_mode(self, value):
+        if value not in ('resize', 'crop'):
             raise serializers.ValidationError('errResize')
-        return attrs
+        return value
 
 
 class MultipleTargetsCmdSerializer(CmdSerializer):
-    targets = NodesField()
+    def get_fields(self):
+        fields = super().get_fields()
+        fields['targets[]'] = serializers.ListField(child=NodeField())
+        return fields
+
 
 
 class PasteCmdSerializer(MultipleTargetsCmdSerializer):
     dst = NodeField()
     cut = serializers.BooleanField(required=False)
 
-    def validate_dst(self, attrs, source):
-        dst = attrs.get(source)
-        if not dst.exists():
+    def validate_dst(self, value):
+        if not value.exists():
             raise serializers.ValidationError('errFileNotFound')
-        return attrs
+        return value
 
 
 # RESPONSE (NODE) SERIALIZERS

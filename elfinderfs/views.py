@@ -39,6 +39,14 @@ from . import serializers
 class ConnectorView(RetrieveAPIView):
     permission_classes = IsAdminUser,
 
+    def parse_query(self, query):
+        result = {}
+        for k, v in query.lists():
+            if not k.endswith('[]'):
+                v = v[0]
+            result[k] = v
+        return result
+
     def get_serializer(self, *args, **kwargs):
         ''' response serializer '''
         data = self.request.DATA or self.request.GET
@@ -91,10 +99,10 @@ class ConnectorView(RetrieveAPIView):
         return list(itertools.chain(*serializer.errors.values()))
 
     def get_object(self):
-        data = self.request.DATA or self.request.GET
+        data = self.parse_query(self.request.DATA or self.request.GET)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
-            cmd = serializer.object
+            cmd = serializer.validated_data
             try:
                 # OPEN #
                 if cmd['cmd'] == 'open':
@@ -107,8 +115,9 @@ class ConnectorView(RetrieveAPIView):
                         'uplMaxSize': settings.ELFINDERFS.get(
                             'uplMaxSize', '32M'),
                     }
-                    if cmd['init']:
-                        response['api'] = '2.0'
+                    # if cmd.get('init'):
+                    #     response['api'] = '2.0'
+                    response['api'] = '2.0'
                     return response
                 # TREE #
                 if cmd['cmd'] == 'tree':
@@ -137,7 +146,7 @@ class ConnectorView(RetrieveAPIView):
                 # RM #
                 elif cmd['cmd'] == 'rm':
                     removed = []
-                    for target in cmd['targets']:
+                    for target in cmd['targets[]']:
                         target.delete()
                         removed.append(target)
                     return {'removed': removed}
@@ -150,14 +159,14 @@ class ConnectorView(RetrieveAPIView):
                 # DUPLICATE #
                 elif cmd['cmd'] == 'duplicate':
                     added = []
-                    for target in cmd['targets']:
+                    for target in cmd['targets[]']:
                         added.append(target.duplicate())
                     return {'added': added}
                 # PASTE #
                 elif cmd['cmd'] == 'paste':
                     added = []
                     removed = []
-                    for target in cmd['targets']:
+                    for target in cmd['targets[]']:
                         added.append(target.copy(cmd['dst'],
                                                  cut=cmd.get('cut')))
                         if cmd.get('cut'):
@@ -200,7 +209,8 @@ class ConnectorView(RetrieveAPIView):
 
     def upload(self, request, *args, **kwargs):
         response = {}
-        serializer = self.get_cmd_serializer(data=request.DATA)
+        data = self.parse_query(self.request.DATA)
+        serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
             cmd = serializer.object
             uploads = request.FILES.getlist('upload[]')
@@ -226,10 +236,10 @@ class ConnectorView(RetrieveAPIView):
                             content_type='application/json')
 
     def cmd(self, request, *args, **kwargs):
-        data = request.DATA or request.GET
+        data = self.parse_query(self.request.DATA or self.request.GET)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
-            cmd = serializer.object
+            cmd = serializer.validated_data
             try:
                 # FILE #
                 if cmd['cmd'] == 'file':
