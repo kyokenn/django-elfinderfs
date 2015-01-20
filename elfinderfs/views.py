@@ -212,7 +212,7 @@ class ConnectorView(RetrieveAPIView):
         data = self.parse_query(self.request.DATA)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
-            cmd = serializer.object
+            cmd = serializer.validated_data
             uploads = request.FILES.getlist('upload[]')
             added = []
             try:
