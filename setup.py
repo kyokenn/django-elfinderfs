@@ -50,7 +50,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
 data = {
     'name': 'django-elfinderfs',
-    'version': '0.0.5',
+    'version': '0.0.6',
     'author': 'Okami',
     'author_email': 'okami@fuzetsu.info',
     'description': (
@@ -59,7 +59,7 @@ data = {
         "does not uses any databases."),
     'license': 'GPLv3',
     'keywords': 'django elfinder file manager',
-    'url': 'https://github.com/okami-1/django-elfinderfs',
+    'url': 'https://pypi.python.org/pypi/django-elfinderfs',
     'packages': [
         'elfinderfs',
         'elfinderfs.migrations',
