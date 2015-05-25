@@ -50,7 +50,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
 data = {
     'name': 'django-elfinderfs',
-    'version': '0.0.7',
+    'version': '0.0.8',
     'author': 'Okami',
     'author_email': 'okami@fuzetsu.info',
     'description': (

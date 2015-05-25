@@ -24,7 +24,7 @@ Installation
 * pip install django-elfinderfs
 * Modify your project's settings.py:
 
-For example:
+```python
 INSTALLED_APPS = (
     ...
     'django.contrib.sites',
@@ -35,7 +35,6 @@ INSTALLED_APPS = (
     ...
 )
 
-```python
 ELFINDERFS = {
     'roots': {
         'Media': {
