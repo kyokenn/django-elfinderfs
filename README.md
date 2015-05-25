@@ -13,8 +13,8 @@ Requirements
 ------------
 
 * Python >= 3.0
-* Django >= 1.6
-* Django REST Framework >= 2.3
+* Django >= 1.8
+* Django REST Framework >= 3.1
 * PIL or Pillow
 
 
@@ -22,10 +22,19 @@ Installation
 ------------
 
 * pip install django-elfinderfs
-* Modify your project's settings.py: add 'rest_framework' and 'elfinderfs' to INSTALLED_APPS.
-* Add elfinderfs configuration to your project's settings.py:
+* Modify your project's settings.py:
 
 For example:
+INSTALLED_APPS = (
+    ...
+    'django.contrib.sites',
+    ...
+    'rest_framework',
+    ...
+    'elfinderfs',
+    ...
+)
+
 ```python
 ELFINDERFS = {
     'roots': {
@@ -60,7 +69,7 @@ Not implemented commands
 * info
 * netmount
 
-Most of the commands are not used in default configuration of the elFinder.
+Most of this commands are not used in default configuration of the elFinder.
 
 
 Not implemented features

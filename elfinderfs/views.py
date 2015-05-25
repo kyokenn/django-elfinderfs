@@ -177,7 +177,7 @@ class ConnectorView(RetrieveAPIView):
                     }
                 # GET #
                 elif cmd['cmd'] == 'get':
-                    return {'content': cmd['target'].open().read()}
+                    return {'content': cmd['target'].open().read().decode('utf-8')}
                 # ARCHIVE #
                 # -- Not implemented --
                 # EXTRACT #
