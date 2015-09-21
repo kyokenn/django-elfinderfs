@@ -49,7 +49,7 @@ class ConnectorView(RetrieveAPIView):
 
     def get_serializer(self, *args, **kwargs):
         ''' response serializer '''
-        data = self.request.DATA or self.request.GET
+        data = self.request.data or self.request.query_params
         cmd = data.get('cmd')
         serializer = {
             'tree': serializers.TreeNodeSerializer,
@@ -69,7 +69,7 @@ class ConnectorView(RetrieveAPIView):
         return serializer(*args, **kwargs)
 
     def get_cmd_serializer_class(self):
-        data = self.request.DATA or self.request.GET
+        data = self.request.data or self.request.query_params
         cmd = data.get('cmd')
         return {
             'ping': serializers.CmdSerializer,
@@ -99,7 +99,7 @@ class ConnectorView(RetrieveAPIView):
         return list(itertools.chain(*serializer.errors.values()))
 
     def get_object(self):
-        data = self.parse_query(self.request.DATA or self.request.GET)
+        data = self.parse_query(self.request.data or self.request.query_params)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
             cmd = serializer.validated_data
@@ -209,7 +209,7 @@ class ConnectorView(RetrieveAPIView):
 
     def upload(self, request, *args, **kwargs):
         response = {}
-        data = self.parse_query(self.request.DATA)
+        data = self.parse_query(self.request.data)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
             cmd = serializer.validated_data
@@ -236,7 +236,7 @@ class ConnectorView(RetrieveAPIView):
                             content_type='application/json')
 
     def cmd(self, request, *args, **kwargs):
-        data = self.parse_query(self.request.DATA or self.request.GET)
+        data = self.parse_query(self.request.data or self.request.query_params)
         serializer = self.get_cmd_serializer(data=data)
         if serializer.is_valid():
             cmd = serializer.validated_data

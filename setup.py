@@ -50,7 +50,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
 data = {
     'name': 'django-elfinderfs',
-    'version': '0.0.8',
+    'version': '0.0.9',
     'author': 'Okami',
     'author_email': 'okami@fuzetsu.info',
     'description': (
@@ -74,7 +74,7 @@ data = {
     'install_requires': [
         'Django >= 1.8',
         'Pillow >= 2.8',
-        'djangorestframework >= 3.1',
+        'djangorestframework >= 3.2',
     ],
     'data_files': find_data_files('elfinderfs/static', '*.*'),
     'include_package_data': True,
