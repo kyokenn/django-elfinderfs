@@ -1,3 +1,9 @@
+Project moved to SourceForge
+----------------------------
+
+Project moved to https://sourceforge.net/p/django-elfinderfs/
+
+
 django-elfinderfs
 =================
 
@@ -7,7 +13,6 @@ operating system.
 
 django-elfinderfs is a 3rd party connector for elFinder 2.x and Django.
 It's a simple local file system driver which does not uses any databases.
-
 
 Requirements
 ------------
