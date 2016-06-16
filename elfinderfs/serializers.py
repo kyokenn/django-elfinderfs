@@ -117,7 +117,6 @@ class MultipleTargetsCmdSerializer(CmdSerializer):
         return fields
 
 
-
 class PasteCmdSerializer(MultipleTargetsCmdSerializer):
     dst = NodeField()
     cut = serializers.BooleanField(required=False)

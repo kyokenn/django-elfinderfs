@@ -26,11 +26,12 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from django.conf import settings
-from django.core.servers.basehttp import FileWrapper
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
+
+from wsgiref.util import FileWrapper
 
 from .models import Node
 from . import serializers

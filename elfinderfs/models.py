@@ -354,13 +354,15 @@ class ImageNodeMixin(object):
             'image/vnd.microsoft.icon')
 
     def _get_thumbnail(self, force_update=False):
-        thumbnails_root = os.path.join(self._config['root'],
-                                       self._config['thumbnails_prefix'])
-        if not os.path.exists(thumbnails_root):
-            os.mkdir(thumbnails_root)
+        troot = os.path.join(self._config['root'],
+                             self._config['thumbnails_prefix'])
+        if not os.path.exists(troot):
+            os.mkdir(troot)
+
         tfile = md5(self.hash.encode('utf-8')).hexdigest() + '.png'
-        path = os.path.join(thumbnails_root, tfile)
-        if not os.path.exists(path) or force_update:
+        tpath = os.path.join(troot, tfile)
+
+        if not os.path.exists(tpath) or force_update:
             image = Image.open(self._rpath)
             size = (50, 50)
             image.thumbnail(size, Image.ANTIALIAS)
@@ -368,7 +370,7 @@ class ImageNodeMixin(object):
             thumbnail.paste(image, (
                 int((size[0] - image.size[0]) / 2),
                 int((size[1] - image.size[1]) / 2)))
-            thumbnail.save(open(path, 'wb'))
+            thumbnail.save(tpath)
         return tfile
 
     @property
